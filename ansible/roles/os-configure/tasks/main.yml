@@ -1,0 +1,64 @@
+# Checks for os distribution
+- name: Fail
+  ansible.builtin.fail:
+    msg: "UNSUPPORTED OS: {{ release }}"
+  when:
+    - release != "ubuntu"
+
+# Appending data in resolve.conf file
+- name: Generate resolv.conf
+  ansible.builtin.template:
+    src: resolv.conf.j2
+    dest: "{{ resolv_file }}"
+    mode: '0644'
+
+# Creating repository on remote instance in sources.list file
+- name: Creating repository on remote instance.
+  ansible.builtin.template:
+    src: sources.list.j2
+    dest: "{{ remote_dest_sources_list_path }}"
+    mode: '0644'
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+
+# Installing packages.
+- name: Install Debian packages.
+  ansible.builtin.apt:
+    name: "{{ packages.deb }}"
+    state: present
+
+# Creating directory
+- name: Creating directory /srv/www
+  ansible.builtin.file:
+    path: "{{ create_src }}"
+    state: directory
+    mode: '0644'
+
+# Creating vg
+- name: Creating a volume group
+  community.general.system.lvg:
+    vg: "{{ volume_group_name }}"
+    pvs: "{{ phyical_volume_pathto_create_vg }}"
+
+# Creating lv
+- name: Creating a logical volume
+  community.general.system.lvol:
+    vg: "{{ volume_group_name }}"
+    lv: "{{ logical_volime_name }}"
+    size: "{{ logical_volume_size }}"
+
+# Formatting it with filesystem
+- name: Creating a filesystem on lv
+  community.general.system.filesystem:
+    fstype: "{{ filesystem_type }}"
+    dev: "{{ path_to_format_filesystem }}"
+
+# Mounting the lvm volume to directory
+- name: Mount mylv to folder
+  ansible.posix.mount:
+    path: "{{ create_src }}"
+    src: "{{ path_to_format_filesystem }}"
+    fstype: "{{ filesystem_type }}"
+    state: mounted

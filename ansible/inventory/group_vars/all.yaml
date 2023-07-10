@@ -1,0 +1,34 @@
+---
+domain:
+ search: netcracker.com
+ nameservers:
+ - 10.112.1.1
+ - 10.112.1.2
+packages:
+ deb:
+ - lvm2
+ - net-tools
+ - python3-dev
+ - python3-pip
+
+repositories: 
+ - deb http://reposrv.netcracker.com/deb/ubuntu focal main
+ - deb http://reposrv.netcracker.com/deb/ubuntu focal main/debian-installer
+ - deb http://reposrv.netcracker.com/deb/ubuntu focal multiverse
+ - deb http://reposrv.netcracker.com/deb/ubuntu focal restricted
+ - deb http://reposrv.netcracker.com/deb/ubuntu focal universe
+ - deb http://reposrv.netcracker.com/deb/ubuntu focal-updates main
+ - deb http://reposrv.netcracker.com/deb/ubuntu focal-updates main/debian-installer
+ - deb http://reposrv.netcracker.com/deb/ubuntu focal-updates multiverse
+ - deb http://reposrv.netcracker.com/deb/ubuntu focal-updates restricted
+ - deb http://reposrv.netcracker.com/deb/ubuntu focal-updates universe
+ - deb http://reposrv.netcracker.com/deb/ubuntu focal-security main
+ - deb http://reposrv.netcracker.com/deb/ubuntu focal-security main/debian-installer
+ - deb http://reposrv.netcracker.com/deb/ubuntu focal-security multiverse
+ - deb http://reposrv.netcracker.com/deb/ubuntu focal-security restricted
+ - deb http://reposrv.netcracker.com/deb/ubuntu focal-security universe
+ - deb http://reposrv.netcracker.com/deb/ubuntu focal-backports main
+ - deb http://reposrv.netcracker.com/deb/ubuntu focal-backports main/debian-installer
+ - deb http://reposrv.netcracker.com/deb/ubuntu focal-backports multiverse
+ - deb http://reposrv.netcracker.com/deb/ubuntu focal-backports restricted
+ - deb http://reposrv.netcracker.com/deb/ubuntu focal-backports universe

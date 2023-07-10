@@ -1,0 +1,17 @@
+---
+# vars file for os-configure
+release: "{{ ansible_distribution|lower() }}"
+resolv_file: /etc/resolv.conf
+source_list: /etc/apt/sources.list
+repo_jinja_template_path: ../templates/sources.list.j2 # /root/demo3/ansible/roles/os-configure/templates/sources.list.j2
+remote_dest_sources_list_path: /etc/apt/sources.list
+create_src: /srv/www
+device_path_lvm: /dev/vdb
+# Partition nummber 1 = /dev/vdb1
+partition_number: 1
+volume_group_name: myvg
+logical_volume_size: 1020M
+phyical_volume_pathto_create_vg: /dev/vdb
+logical_volime_name: mylv
+filesystem_type: xfs
+path_to_format_filesystem: /dev/mapper/myvg-mylv

@@ -1,0 +1,12 @@
+---
+# vars file for nginx
+user_ceration: webuser
+user_password: webuser
+user_shell: /bin/bash
+package_name: nginx
+copy_index_file: index.html
+copy_index_file_path: roles/nginx/files/index.html
+path_to_copyat: /srv/www
+permission: "0644"
+src_nginx_config_file: roles/nginx/files/nginx.conf
+nginx_conffile_path: /etc/nginx/nginx.conf

@@ -1,0 +1,10 @@
+# /etc/resolv.conf
+{% if domain.search is defined %}
+search {{ domain.search }}
+{% endif %}
+{% if domain.nameservers is defined %}
+{% for nameserver in domain.nameservers %}
+nameserver {{ nameserver }}
+{% endfor %}
+{% endif %}
+

@@ -1,0 +1,34 @@
+---
+# Demo4 roles execuation
+# Name: Doing configuration in Instance using ansible.
+# Aurthor: Rushikesh Bhoir
+# Version: V1
+# Date: 28 June 2023
+
+- name: Demo4_roles
+  hosts: all
+  gather_facts: true
+  become: true
+  # vars_files:
+  #   - ./inventory/group_vars/all.yaml
+  roles:
+    - { role: os-configure, tags: os-configure }
+    - { role: nginx, tags: nginx }
+
+  # roles:
+  #   - { role: os-configure, when: ansible_distribution == 'Ubuntu', vars_file: ./inventory/group_vars/all.yaml }
+  #   - { role: nginx,  when: ansible_distribution == 'Ubuntu' }
+
+  # tasks:
+  #   - name: Check OS distribution
+  #     ansible.builtin.debug:
+  #       var: ansible_distribution
+  #     failed_when: ansible_distribution == 'Ubuntu'
+
+  #   - name: Call role os-configure
+  #     import_role:
+  #       name: os-configure
+
+  #   - name: Call role Nginx
+  #     import_role:
+  #       name: nginx

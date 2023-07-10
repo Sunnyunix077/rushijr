@@ -1,0 +1,7 @@
+---
+# handlers file for nginx
+- name: Restart nginx service
+  ansible.builtin.service:
+    name: "{{ package_name }}"
+    state: restarted
+  when: Index_html_changed.changed
