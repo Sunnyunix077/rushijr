@@ -45,7 +45,7 @@ deploy:
       - echo "$openrc" > openstack.sh
       # - cat openstack.sh
       # - echo "export OS_PASSWORD=$OS_PASSWORD_INPUT" >> openstack.sh   
-      - apt-get install ssh -y
+      # - apt-get install ssh -y
       # - ssh-keygen -t rsa -b 2048 -f "/root/.ssh/id_rsa" -N ""
       - mkdir -p $HOME/.ssh/
       - echo "$PUBLIC_KEY" > $HOME/.ssh/id_rsa.pub
