@@ -62,6 +62,7 @@ deploy:
       - echo $OS_USERNAME
       - echo $OS_PASSWORD
       - echo $OS_PASSWORD_INPUT
+      - openstack token issue
       - cd terraform
       - terraform init
       - terraform apply -auto-approve
