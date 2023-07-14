@@ -55,7 +55,6 @@ deploy:
       # - ssh-keygen -t rsa -b 2048 -f "/root/.ssh/id_rsa" -N ""
       - mkdir -p $HOME/.ssh/
       - echo "$PUBLIC_KEY" > $HOME/.ssh/id_rsa.pub
-      - source openstack.sh
       - echo $OS_CACERT
       - echo $OS_PROJECT_ID
       - echo $OS_AUTH_URL
