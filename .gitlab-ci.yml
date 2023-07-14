@@ -43,12 +43,6 @@ deploy:
     image: $terraform_image
     script:
       - echo "$openrc" > openstack.sh
-      - echo $OS_CACERT
-      - echo $OS_PROJECT_ID
-      - echo $OS_AUTH_URL
-      - echo $OS_USERNAME
-      - echo $OS_PASSWORD
-      - echo $OS_PASSWORD_INPUT
       # - cat openstack.sh
       # - echo "export OS_PASSWORD=$OS_PASSWORD_INPUT" >> openstack.sh   
       # - apt-get install ssh -y
@@ -56,12 +50,12 @@ deploy:
       - mkdir -p $HOME/.ssh/
       - echo "$PUBLIC_KEY" > $HOME/.ssh/id_rsa.pub
       - source openstack.sh
-      - echo $OS_CACERT
-      - echo $OS_PROJECT_ID
-      - echo $OS_AUTH_URL
-      - echo $OS_USERNAME
-      - echo $OS_PASSWORD
-      - echo $OS_PASSWORD_INPUT
+      # - echo $OS_CACERT
+      # - echo $OS_PROJECT_ID
+      # - echo $OS_AUTH_URL
+      # - echo $OS_USERNAME
+      # - echo $OS_PASSWORD
+      # - echo $OS_PASSWORD_INPUT
       - cd terraform
       - terraform init
       - terraform apply -auto-approve
