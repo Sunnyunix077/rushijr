@@ -23,8 +23,7 @@ stages:
 #########################################################################################
 
 workflow:
-  rules:
-    - when: never
+  only: manual
 
 # workflow:
 #   rules:
