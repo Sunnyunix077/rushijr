@@ -5,7 +5,6 @@
 # Version: V1
 # Date: 11 July 2023
 #########################################################################################
-
 # Defined Variables
 variables:
   terraform_image: artifactorycn.netcracker.com:17048/utils/terraform-openstack:1.4.6
@@ -19,6 +18,11 @@ stages:
   - "configure" # Instance is getting configured using ansible.
   - "test"      # Test the curl output.
   - "destroy"   # Destroying the instance.
+
+#########################################################################################
+# Defining runner to run the pipeline.
+default:
+  tags: [ NETCRACKER ]
 
 #########################################################################################
 
@@ -42,8 +46,8 @@ workflow:
 # STAGE1: ansible-lint verifying the code.
 lint:
     stage: lint
-    tags:
-      - NETCRACKER
+    # tags:
+    #   - NETCRACKER
     image: $ansible_image
 
     script:
@@ -56,8 +60,8 @@ lint:
 #STAGE2: # terraform building an instance.
 deploy:
     stage: deploy
-    tags:
-      - NETCRACKER
+    # tags:
+    #   - NETCRACKER
     image: $terraform_image
     script:
       - echo "$openrc" > openstack.sh
@@ -91,8 +95,8 @@ deploy:
 # STAGE3: Instance is getting configured using ansible.
 configure:
     stage: configure
-    tags:
-      - NETCRACKER
+    # tags:
+    #   - NETCRACKER
     image: $ansible_image
     script:
       - mkdir -p $HOME/.ssh/ && mkdir -p /etc/ansible
@@ -109,8 +113,8 @@ configure:
 test:
     stage: test
     image: $terraform_image
-    tags:
-      - NETCRACKER
+    # tags:
+    #   - NETCRACKER
     script:
       - cd terraform
       - cat floating_ip.txt
@@ -122,8 +126,8 @@ test:
 destroy:
     stage: destroy
     image: $terraform_image
-    tags: 
-      - NETCRACKER
+    # tags: 
+    #   - NETCRACKER
     script:
       - echo "$openrc" > openstack.sh
       - mkdir -p $HOME/.ssh/
