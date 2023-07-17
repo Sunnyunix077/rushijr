@@ -32,11 +32,11 @@ default:
 #       when: never  # Prevent pipeline run for push event
 #     - when: always # Run pipeline for all other cases
 
-workflow:
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "web"' # Only run if you click the "Run Pipeline" button in the web UI
-      when: always
-    - when: never # Prevent pipeline for all other cases
+# workflow:
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "web"' # Only run if you click the "Run Pipeline" button in the web UI
+#       when: always
+#     - when: never # Prevent pipeline for all other cases
 
 # workflow:
 #     rules:
