@@ -14,10 +14,10 @@ variables:
 
 stages:
   - "lint"      # ansible-lint verifying the code.
-  - "deploy"    # terraform building an instance.
-  - "configure" # Instance is getting configured using ansible.
-  - "test"      # Test the curl output.
-  - "destroy"   # Destroying the instance.
+  # - "deploy"    # terraform building an instance.
+  # - "configure" # Instance is getting configured using ansible.
+  # - "test"      # Test the curl output.
+  # - "destroy"   # Destroying the instance.
 
 #########################################################################################
 # Defining runner to run the pipeline.
@@ -57,11 +57,9 @@ lint:
 
     script:
      - ansible-lint --offline --exclude meta/ --exclude defaults/ ansible/site.yaml 2> linter.txt
-    rules:
-      - if: $CI_JOB_STATUS == "failed"
     artifacts:
-        paths:
-          - linter.txt
+      paths:
+      - linter.txt
 
 # #########################################################################################
 # #STAGE2: # terraform building an instance.
