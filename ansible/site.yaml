@@ -5,7 +5,7 @@
 # Version: V1
 # Date: 28 June 2023
 
- - name: Demo4_roles
+- name: Demo4_roles
   hosts: all
   gather_facts: true
   become: true
