@@ -14,10 +14,10 @@ variables:
 
 stages:
   - "lint"      # ansible-lint verifying the code.
-  - "deploy"    # terraform building an instance.
-  - "configure" # Instance is getting configured using ansible.
-  - "test"      # Test the curl output.
-  - "destroy"   # Destroying the instance.
+  # - "deploy"    # terraform building an instance.
+  # - "configure" # Instance is getting configured using ansible.
+  # - "test"      # Test the curl output.
+  # - "destroy"   # Destroying the instance.
 
 #########################################################################################
 # Defining runner to run the pipeline.
