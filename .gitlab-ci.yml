@@ -56,7 +56,7 @@ lint:
     image: $ansible_image
 
     script:
-      - ansible-lint --offline --exclude meta/ --exclude defaults/ ansible/site.yaml 2> linter.txt
+      - ansible-lint -p --offline --exclude meta/ --exclude defaults/ ansible/site.yaml > linter.txt
 
     artifacts:
       paths:
