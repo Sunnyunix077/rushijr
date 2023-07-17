@@ -32,16 +32,16 @@ default:
 #       when: never  # Prevent pipeline run for push event
 #     - when: always # Run pipeline for all other cases
 
-# workflow:
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "web"' # Only run if you click the "Run Pipeline" button in the web UI
-#       when: always
-#     - when: never # Prevent pipeline for all other cases
-
 workflow:
-    rules:
-      - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-        when: always
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web"' # Only run if you click the "Run Pipeline" button in the web UI
+      when: always
+    - when: never # Prevent pipeline for all other cases
+
+# workflow:
+#     rules:
+#       - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+#         when: always
         
 # workflow:
 #   rules:
@@ -57,9 +57,11 @@ lint:
 
     script:
      - ansible-lint --offline --exclude meta/ --exclude defaults/ ansible/site.yaml 2> linter.txt
+    rules:
+      - if: $CI_JOB_STATUS == "failed"
     artifacts:
-      paths:
-      - linter.txt
+        paths:
+          - linter.txt
 
 #########################################################################################
 #STAGE2: # terraform building an instance.
@@ -89,6 +91,8 @@ deploy:
       - cat ../ansible/inventory/hosts.ini
       - terraform state pull > tfstate.json
       - terraform output floating_ip > floating_ip.txt
+    only:
+      - manual
       
     artifacts:
       paths:
@@ -112,6 +116,8 @@ configure:
       - cd /etc/ansible
       # - ansible --version
       - ansible-playbook site.yaml
+    only:
+      - manual
 
 #########################################################################################
 # STAGE4: Test the curl output.
@@ -125,6 +131,8 @@ test:
       - cat floating_ip.txt
       - IP_ADDRESS=$(grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' floating_ip.txt)
       - curl -sI ${IP_ADDRESS}:8080 | head -n 1 | awk 'NR==1 {print $1, $2, $3}' | grep -i '^HTTP/'
+    only:
+      - manual
 
 #########################################################################################
 # STAGE5: Destroying the instance.
@@ -142,5 +150,7 @@ destroy:
       - terraform init
       - terraform state push tfstate.json
       - terraform destroy -auto-approve
+    only:
+      - manual
 
 #########################################################################################
