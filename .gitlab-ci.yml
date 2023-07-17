@@ -14,10 +14,10 @@ variables:
 
 stages:
   - "lint"      # ansible-lint verifying the code.
-  # - "deploy"    # terraform building an instance.
-  # - "configure" # Instance is getting configured using ansible.
-  # - "test"      # Test the curl output.
-  # - "destroy"   # Destroying the instance.
+  - "deploy"    # terraform building an instance.
+  - "configure" # Instance is getting configured using ansible.
+  - "test"      # Test the curl output.
+  - "destroy"   # Destroying the instance.
 
 #########################################################################################
 # Defining runner to run the pipeline.
@@ -56,93 +56,93 @@ lint:
     image: $ansible_image
 
     script:
-     - ansible-lint --offline --exclude meta/ --exclude defaults/ ansible/site.yaml 2> linter.txt
+      - ansible-lint --offline --exclude meta/ --exclude defaults/ ansible/site.yaml 2> linter.txt
     rules:
-     - if: $CI_JOB_STATUS == "failed" 
+      - if: $CI_JOB_STATUS == "failed" 
     artifacts:
       paths:
       - linter.txt
 
-# #########################################################################################
-# #STAGE2: # terraform building an instance.
-# deploy:
-#     stage: deploy
-#     # tags:
-#     #   - NETCRACKER
-#     image: $terraform_image
-#     script:
-#       - echo "$openrc" > openstack.sh
-#       # - cat openstack.sh
-#       # - echo "export OS_PASSWORD=$OS_PASSWORD_INPUT" >> openstack.sh   
-#       # - apt-get install ssh -y
-#       # - ssh-keygen -t rsa -b 2048 -f "/root/.ssh/id_rsa" -N ""
-#       - mkdir -p $HOME/.ssh/
-#       - echo "$PUBLIC_KEY" > $HOME/.ssh/id_rsa.pub
-#       - source openstack.sh
-#       # - echo $OS_CACERT
-#       # - echo $OS_PROJECT_ID
-#       # - echo $OS_AUTH_URL
-#       # - echo $OS_USERNAME
-#       # - echo $OS_PASSWORD
-#       # - echo $OS_PASSWORD_INPUT
-#       - cd terraform
-#       - terraform init
-#       - terraform apply -auto-approve
-#       - cat ../ansible/inventory/hosts.ini
-#       - terraform state pull > tfstate.json
-#       - terraform output floating_ip > floating_ip.txt
+#########################################################################################
+#STAGE2: # terraform building an instance.
+deploy:
+    stage: deploy
+    # tags:
+    #   - NETCRACKER
+    image: $terraform_image
+    script:
+      - echo "$openrc" > openstack.sh
+      # - cat openstack.sh
+      # - echo "export OS_PASSWORD=$OS_PASSWORD_INPUT" >> openstack.sh   
+      # - apt-get install ssh -y
+      # - ssh-keygen -t rsa -b 2048 -f "/root/.ssh/id_rsa" -N ""
+      - mkdir -p $HOME/.ssh/
+      - echo "$PUBLIC_KEY" > $HOME/.ssh/id_rsa.pub
+      - source openstack.sh
+      # - echo $OS_CACERT
+      # - echo $OS_PROJECT_ID
+      # - echo $OS_AUTH_URL
+      # - echo $OS_USERNAME
+      # - echo $OS_PASSWORD
+      # - echo $OS_PASSWORD_INPUT
+      - cd terraform
+      - terraform init
+      - terraform apply -auto-approve
+      - cat ../ansible/inventory/hosts.ini
+      - terraform state pull > tfstate.json
+      - terraform output floating_ip > floating_ip.txt
       
-#     artifacts:
-#       paths:
-#       - terraform/tfstate.json
-#       - ansible/inventory/hosts.ini
-#       - terraform/floating_ip.txt
+    artifacts:
+      paths:
+      - terraform/tfstate.json
+      - ansible/inventory/hosts.ini
+      - terraform/floating_ip.txt
 
-# #########################################################################################
-# # STAGE3: Instance is getting configured using ansible.
-# configure:
-#     stage: configure
-#     # tags:
-#     #   - NETCRACKER
-#     image: $ansible_image
-#     script:
-#       - mkdir -p $HOME/.ssh/ && mkdir -p /etc/ansible
-#       - echo "$PRIVATE_KEY" > $HOME/.ssh/id_rsa && chmod 600 $HOME/.ssh/id_rsa
-#       - sleep 60
-#       - cd ansible
-#       - cp -prv * /etc/ansible/ > /dev/null
-#       - cd /etc/ansible
-#       # - ansible --version
-#       - ansible-playbook site.yaml
+#########################################################################################
+# STAGE3: Instance is getting configured using ansible.
+configure:
+    stage: configure
+    # tags:
+    #   - NETCRACKER
+    image: $ansible_image
+    script:
+      - mkdir -p $HOME/.ssh/ && mkdir -p /etc/ansible
+      - echo "$PRIVATE_KEY" > $HOME/.ssh/id_rsa && chmod 600 $HOME/.ssh/id_rsa
+      - sleep 60
+      - cd ansible
+      - cp -prv * /etc/ansible/ > /dev/null
+      - cd /etc/ansible
+      # - ansible --version
+      - ansible-playbook site.yaml
 
-# #########################################################################################
-# # STAGE4: Test the curl output.
-# test:
-#     stage: test
-#     image: $terraform_image
-#     # tags:
-#     #   - NETCRACKER
-#     script:
-#       - cd terraform
-#       - cat floating_ip.txt
-#       - IP_ADDRESS=$(grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' floating_ip.txt)
-#       - curl -sI ${IP_ADDRESS}:8080 | head -n 1 | awk 'NR==1 {print $1, $2, $3}' | grep -i '^HTTP/'
+#########################################################################################
+# STAGE4: Test the curl output.
+test:
+    stage: test
+    image: $terraform_image
+    # tags:
+    #   - NETCRACKER
+    script:
+      - cd terraform
+      - cat floating_ip.txt
+      - IP_ADDRESS=$(grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' floating_ip.txt)
+      - curl -sI ${IP_ADDRESS}:8080 | head -n 1 | awk 'NR==1 {print $1, $2, $3}' | grep -i '^HTTP/'
 
-# #########################################################################################
-# # STAGE5: Destroying the instance.
-# destroy:
-#     stage: destroy
-#     image: $terraform_image
-#     # tags: 
-#     #   - NETCRACKER
-#     script:
-#       - echo "$openrc" > openstack.sh
-#       - mkdir -p $HOME/.ssh/
-#       - echo "$PUBLIC_KEY" > $HOME/.ssh/id_rsa.pub
-#       - source openstack.sh
-#       - cd terraform
-#       - terraform init
-#       - terraform state push tfstate.json
-#       - terraform destroy -auto-approve
+#########################################################################################
+# STAGE5: Destroying the instance.
+destroy:
+    stage: destroy
+    image: $terraform_image
+    # tags: 
+    #   - NETCRACKER
+    script:
+      - echo "$openrc" > openstack.sh
+      - mkdir -p $HOME/.ssh/
+      - echo "$PUBLIC_KEY" > $HOME/.ssh/id_rsa.pub
+      - source openstack.sh
+      - cd terraform
+      - terraform init
+      - terraform state push tfstate.json
+      - terraform destroy -auto-approve
 
-# #########################################################################################
+#########################################################################################
